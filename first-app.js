@@ -1,22 +1,24 @@
 const http = require("http");
 
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log("In the middleware");
-  next();
-});
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/admin", adminRoutes);
+app.use("/shop", shopRoutes);
 
 app.use((req, res, next) => {
-  console.log("In another middleware");
-  res.send("<h1>Helllo from express!</h1>");
+  res.status(404).send("<h1>Page not found</h1>");
 });
 
-const server = http.createServer(app);
+app.listen(3000);
 
-server.listen(3000);
+//extended:false   it should be able to parse non-default features
 
 //thread is like the process running in OS
 //It handles multiple requests : event loop is started by node js, event loop handles event callbacks
